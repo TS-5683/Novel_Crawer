@@ -4,3 +4,4 @@ main
 main.dSYM
 .vscode
 *.html
+*.ipynb
