@@ -88,13 +88,13 @@ class Crawler:
 
 if __name__ == '__main__':
     novel_name = '人在大唐已被退学'
-    output_path = f'{novel_name}/{novel_name}.txt'
-    logpath = f'{novel_name}/already_log.txt'
+    output_path = f'Novels/{novel_name}/{novel_name}.txt'
+    logpath = f'Novels/{novel_name}/already_log.txt'
     catalog_url = 'https://www.22biqu.com/biqu54966/'
     home_url = 'https://www.22biqu.com'
 
-    if not os.path.exists(novel_name):
-        os.mkdir(novel_name)
+    if not os.path.exists(f'Novels/{novel_name}'):
+        os.mkdir(f'Novels/{novel_name}')
     init = False if os.path.exists(output_path) and os.path.exists(logpath) else True
 
     cler = Crawler(output_path, logpath, home_url, catalog_url, init=init)
