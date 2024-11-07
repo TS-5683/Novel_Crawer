@@ -1,12 +1,16 @@
-from get_novel._22biqu_crawler import Crawler
+from get_novel.biquge77_crawler import Crawler
 import os
 
-output_path = '顶级气运，悄悄修炼千年/顶级气运，悄悄修炼千年.txt'
-logpath = '顶级气运，悄悄修炼千年/already_log.txt'
-catalog_url = 'https://www.22biqu.com/biqu42190/'
-home_url = 'https://www.22biqu.com'
+novel_name = '我，签到万年，被美女徒弟曝光了'
+output_path = f'{novel_name}/{novel_name}.txt'
+logpath = f'{novel_name}/already_log.txt'
+catalog_url = 'http://www.biquge77.net/32_32850/'
+home_url = 'http://www.biquge77.net'
+
+if not os.path.exists(novel_name):
+    os.mkdir(novel_name)
 init = False if os.path.exists(output_path) and os.path.exists(logpath) else True
 
 cler = Crawler(output_path, logpath, home_url, catalog_url, init=init)
-print(cler.get_novel())
+cler.get_novel()
 del cler

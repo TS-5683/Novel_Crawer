@@ -2,6 +2,7 @@ import requests as rq
 from lxml import etree
 from copy import copy
 import os
+from tools.random_agent import get
 
 class Crawler:
     def __init__(self, txtpath:str, logpath:str, home_url:str, catalog_url:str, init=True) -> None:
@@ -10,9 +11,7 @@ class Crawler:
         self.catalog_url = catalog_url
         self.logpath = logpath
         self.init = init
-        self.headers = {
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
-        }
+        self.headers = get()
 
         if not init:
             with open(logpath, 'r', encoding='utf-8') as f:
@@ -48,17 +47,23 @@ class Crawler:
         return res
 
     def get_chapter_content(self, chapter_url:str):
-        res = ''
-        url = self.home_url + chapter_url
+        res = []
+        chapter_urls = [chapter_url, f'{chapter_url[:-5]}_2.html']
 
-        response = rq.get(url, headers=self.headers)
-        response.encoding = 'utf-8'
+        for i, curl in enumerate(chapter_urls):
+            url = self.home_url + curl
+            response = rq.get(url, headers=self.headers)
+            response.encoding = 'utf-8'
 
-        html = etree.HTML(response.text)
-        res = html.xpath('//div[@class="content" and @id="content"]//text()')[2:]
-        res = [i.strip() for i in res if any(char.isprintable() for char in i)]
+            html = etree.HTML(response.text)
+            if i == 0:
+                res_ = html.xpath('//div[@class="content" and @id="content"]//text()')[2:]
+            else:
+                res_ = html.xpath('//div[@class="content" and @id="content"]//text()')[1:]
+            res += [i.strip() for i in res_ if any(char.isprintable() for char in i)]
+
+        res = list(filter(lambda x: x, res))
         res = '\n'.join(res)
-
         return res
 
     def get_novel(self):
@@ -67,8 +72,7 @@ class Crawler:
             for chapter in catalog:
                 if chapter['title'] in self.alread_log:
                     continue
-                print(chapter['title'] + '\n', file=self.txtio)
-                print(self.get_chapter_content(chapter['link']) + '\n\n', file=self.txtio)
+                print(chapter['title'] + '\n\n' + self.get_chapter_content(chapter['link']) + '\n\n', file=self.txtio)
                 print(chapter['title'])
                 self.alread_log.append(chapter['title'])
             print('顺利完成')
@@ -83,12 +87,16 @@ class Crawler:
 
 
 if __name__ == '__main__':
-    output_path = '人在大唐已被退学/人在大唐已被退学.txt'
-    logpath = '人在大唐已被退学/already_log.txt'
+    novel_name = '人在大唐已被退学'
+    output_path = f'{novel_name}/{novel_name}.txt'
+    logpath = f'{novel_name}/already_log.txt'
     catalog_url = 'https://www.22biqu.com/biqu54966/'
     home_url = 'https://www.22biqu.com'
+
+    if not os.path.exists(novel_name):
+        os.mkdir(novel_name)
     init = False if os.path.exists(output_path) and os.path.exists(logpath) else True
 
     cler = Crawler(output_path, logpath, home_url, catalog_url, init=init)
-    print(cler.get_novel())
+    cler.get_novel()
     del cler
