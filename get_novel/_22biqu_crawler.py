@@ -88,13 +88,3 @@ class Crawler:
             with open(self.logpath, 'w', encoding='utf-8') as f:
                 for i in self.already_log:
                     print(i, file=f)
-
-
-if __name__ == '__main__':
-    novel_name = '人在大唐已被退学'
-    catalog_url = 'https://www.22biqu.com/biqu54966/'
-    home_url = 'https://www.22biqu.com'
-
-    cler = Crawler(novel_name, home_url, catalog_url)
-    cler.get_novel()
-    del cler

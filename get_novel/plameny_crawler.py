@@ -79,13 +79,3 @@ class Crawler:
             with open(self.logpath, 'w', encoding='utf-8') as f:
                 for i in self.already_log:
                     print(i, file=f)
-
-
-if __name__ == '__main__':
-    novel_name = '我不会武功'
-    catalog_url = 'https://www.plameny.com/plabook/hgyyj/'
-    home_url = 'https://www.plameny.com'
-
-    cler = Crawler(novel_name, home_url, catalog_url)
-    cler.get_chapter_content('/pla/86_hgyyj/xyjhtyj.html')
-    del cler
