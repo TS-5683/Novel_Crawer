@@ -12,7 +12,7 @@ class Crawler:
             os.mkdir(f'Novels/{novel_name}')
         init = False if os.path.exists(txtpath) and os.path.exists(logpath) else True
         
-        self.txtio = open(txtpath, mode='w' if init else 'a', encoding='gbk')
+        self.txtio = open(txtpath, mode='w' if init else 'a', encoding='utf-8')
         self.home_url = home_url
         self.catalog_url = catalog_url
         self.logpath = logpath
@@ -74,7 +74,7 @@ class Crawler:
             print('中断', e)
             
         finally:
-            with open(self.logpath, 'w', encoding='gbk') as f:
+            with open(self.logpath, 'w', encoding='utf-8') as f:
                 for i in self.already_log:
                     print(i, file=f)
 
