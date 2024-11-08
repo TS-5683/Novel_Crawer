@@ -1,11 +1,13 @@
-from get_novel.plameny_crawler import Crawler as PlameCrawler
-from get_novel.biquge77_crawler import Crawler as BiqugeCrawler
+from get_novel._22biqu_crawler import Crawler as _22biquCrawler
+from get_novel.bxwxa_crawler import Crawler as bxwxaCrawler
+from get_novel.beqege_crawler import Crawler as beqegeCrawler
+from get_novel.biquge77_crawler import Crawler as biquge77Crawler
+from get_novel.plameny_crawler import Crawler as plamenyCrawler
+import sys
+
+def main():
+    cler = eval(f'{sys.argv[1]}Crawler{(sys.argv[2], sys.argv[3], sys.argv[4])}')
+    cler.get_catalog()
 
 if __name__ == '__main__':
-    novel_name = '我，签到万年，被美女徒弟曝光了'
-    catalog_url = 'http://www.biquge77.net/32_32850/'
-    home_url = 'http://www.biquge77.net'
-
-    cler = BiqugeCrawler(novel_name, home_url, catalog_url)
-    cler.get_novel()
-    del cler
+    main()
