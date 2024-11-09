@@ -6,10 +6,10 @@ from tools.random_agent import get
 
 class Crawler:
     def __init__(self, novel_name, home_url:str, catalog_url:str) -> None:
-        txtpath = f'Novels/{novel_name}/{novel_name}.txt'
-        logpath = f'Novels/{novel_name}/already_log.txt'
-        if not os.path.exists(f'Novels/{novel_name}'):
-            os.mkdir(f'Novels/{novel_name}')
+        txtpath = f'novels/{novel_name}/{novel_name}.txt'
+        logpath = f'novels/{novel_name}/already_log.txt'
+        if not os.path.exists(f'novels/{novel_name}'):
+            os.mkdir(f'novels/{novel_name}')
         init = False if os.path.exists(txtpath) and os.path.exists(logpath) else True
 
         self.txtio = open(txtpath, mode='w' if init else 'a', encoding='utf-8')
