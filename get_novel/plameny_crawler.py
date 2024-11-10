@@ -47,13 +47,11 @@ class Crawler:
     def get_chapter_content(self, chapter_url:str):
         res = []
 
-        i = -1
+        i = 0
         while True:
             i += 1
-            if i == 1:
-                continue
 
-            curl = chapter_url if i == 0 else f'{chapter_url[:-5]}_{i}.html'
+            curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
             url = self.home_url + curl
             response = rq.get(url, headers=get())
             if response.status_code != 200:
@@ -61,8 +59,13 @@ class Crawler:
             response.encoding = 'utf-8'
 
             html = etree.HTML(response.text)
+
             res_ = html.xpath('//article[@class="content" and @id="article"]//text()')
             res += [i.strip() for i in res_ if any(char.isprintable() for char in i)]
+            
+            page = html.xpath('//h1/small')
+            if not page:
+                break
 
         res = list(filter(lambda x: x, res))
         res = '\n'.join(res)

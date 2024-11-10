@@ -47,13 +47,11 @@ class Crawler:
     def get_chapter_content(self, chapter_url:str):
         res = []
 
-        i = -1
+        i = 0
         while True:
             i += 1
-            if i == 1:
-                continue
 
-            curl = chapter_url if i == 0 else f'{chapter_url[:-5]}_{i}.html'
+            curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
             url = self.catalog_url + curl
             response = rq.get(url, headers=get())
             response.encoding = 'gbk'

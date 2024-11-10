@@ -6,7 +6,5 @@ if __name__ == '__main__':
     catacolg_url = 'https://www.plameny.com/plabook/hgyyj/'
 
     cler = Crawler(novel_name, home_url, catacolg_url)
-    with open('testFile.txt', 'w', encoding='utf-8') as f:
-        print(cler.get_chapter_content('/pla/86_hgyyj/xyyjiex.html'), file=f)
-    
+    cler.get_novel()
     del cler
