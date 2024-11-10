@@ -53,17 +53,11 @@ class Crawler:
     def get_chapter_content(self, chapter_url:str):
         res = []
 
-        i = 0
-        while True:
-            i += 1
-
-            curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
+        chapter_urls = [chapter_url, f'{chapter_url[:-5]}_2.html']
+        for curl in chapter_urls:
             url = self.home_url + curl
             response = rq.get(url, headers=get())
             response.encoding = 'utf-8'
-
-            if response.status_code != 200:
-                break
 
             html = etree.HTML(response.text)
             res_ = html.xpath('//div[@class="content" and @id="content"]//text()')
