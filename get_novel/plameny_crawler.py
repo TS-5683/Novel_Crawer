@@ -61,13 +61,14 @@ class Crawler:
             html = etree.HTML(response.text)
 
             res_ = html.xpath('//article[@class="content" and @id="article"]//text()')
-            res += [i.strip() for i in res_ if any(char.isprintable() for char in i)]
+            res_ = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
+            res_ = list(filter(lambda x: x, res_))
+            res += res_
             
             page = html.xpath('//h1/small')
             if not page:
                 break
-
-        res = list(filter(lambda x: x, res))
+        
         res = '\n'.join(res)
         return res
 
