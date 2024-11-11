@@ -45,23 +45,13 @@ class Crawler:
         return res
 
     def get_chapter_content(self, chapter_url:str):
-        res = []
+        url = self.catalog_url + chapter_url
+        response = rq.get(url, headers=get())
+        response.encoding = 'gbk'
 
-        i = 0
-        while True:
-            i += 1
-
-            curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
-            url = self.catalog_url + curl
-            response = rq.get(url, headers=get())
-            response.encoding = 'gbk'
-
-            if response.status_code != 200:
-                break
-
-            html = etree.HTML(response.text)
-            res_ = html.xpath('//div[@id="content"]//text()')[3:]
-            res += [i.strip() for i in res_ if any(char.isprintable() for char in i)]
+        html = etree.HTML(response.text)
+        res_ = html.xpath('//div[@id="content"]//text()')[3:]
+        res = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
 
         res = list(filter(lambda x: x, res))
         res = '\n'.join(res).replace('\xa0', '')
