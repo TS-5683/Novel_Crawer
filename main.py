@@ -7,8 +7,7 @@ import sys
 
 def main():
     try:
-        cler = eval(
-            f'{sys.argv[1]}Crawler{(sys.argv[2], sys.argv[3], sys.argv[4])}')
+        cler = eval(f'{sys.argv[1]}Crawler{(sys.argv[2], sys.argv[3], sys.argv[4])}')
     except Exception as e:
         print('输入参数错误\n', e)
         return
