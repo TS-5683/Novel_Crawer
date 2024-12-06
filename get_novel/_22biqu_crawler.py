@@ -84,7 +84,9 @@ class Crawler:
             for chapter in catalog:
                 if chapter['title'] in self.already_log:
                     continue
-                print(chapter['title'] + '\n\n' + self.get_chapter_content(chapter['link']) + '\n\n', file=self.txtio)
+                print(chapter['title'] + '\n\n' 
+                      + self.get_chapter_content(chapter['link']) 
+                      + '\n\n', file=self.txtio)
                 print(chapter['title'])
                 self.already_log.append(chapter['title'])
             print('顺利完成')
