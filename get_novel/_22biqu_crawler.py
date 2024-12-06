@@ -73,7 +73,6 @@ class Crawler:
             if pre_res_ and pre_res_[0] == res_[0]:
                 break
             pre_res_ = res_
-
             res += res_
 
         res = '\n'.join(res)
@@ -92,7 +91,7 @@ class Crawler:
 
         except Exception as e:
             print('中断', e)
-            
+
         finally:
             with open(self.logpath, 'w', encoding='utf-8') as f:
                 for i in self.already_log:
