@@ -4,8 +4,9 @@ from copy import copy
 import os
 from tools.random_agent import get
 
+
 class Crawler:
-    def __init__(self, novel_name, home_url:str, catalog_url:str) -> None:
+    def __init__(self, novel_name, home_url: str, catalog_url: str) -> None:
         txtpath = f'novels/{novel_name}/{novel_name}.txt'
         logpath = f'novels/{novel_name}/already_log.txt'
         if not os.path.exists(f'novels/{novel_name}'):
@@ -50,7 +51,7 @@ class Crawler:
 
         return res
 
-    def get_chapter_content(self, chapter_url:str):
+    def get_chapter_content(self, chapter_url: str):
         res = []
 
         i = 0
@@ -58,8 +59,8 @@ class Crawler:
         while True:
             i += 1
             curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
-
             url = self.home_url + curl
+
             response = rq.get(url, headers=get())
             response.encoding = 'utf-8'
             if response.status_code != 200:
@@ -84,8 +85,7 @@ class Crawler:
             for chapter in catalog:
                 if chapter['title'] in self.already_log:
                     continue
-                print(chapter['title'] + '\n\n' 
-                      + self.get_chapter_content(chapter['link']) 
+                print(chapter['title'] + '\n\n' + self.get_chapter_content(chapter['link'])
                       + '\n\n', file=self.txtio)
                 print(chapter['title'])
                 self.already_log.append(chapter['title'])
