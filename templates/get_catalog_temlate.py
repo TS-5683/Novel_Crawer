@@ -3,8 +3,9 @@ from lxml import etree
 from copy import copy
 from tools.random_agent import get
 
-# 分页目录爬取
+
 def get_catalog1(self):
+    # 分页目录爬取
     res = copy([])
 
     response = rq.get(self.catalog_url, headers=get())
@@ -27,8 +28,9 @@ def get_catalog1(self):
 
     return res
 
-# 不分页目录爬取
+
 def get_catalog2(self):
+    # 不分页目录爬取
     res = copy([])
 
     response = rq.get(self.catalog_url, headers=get())

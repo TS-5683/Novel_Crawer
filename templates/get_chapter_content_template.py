@@ -2,22 +2,24 @@ import requests as rq
 from tools.random_agent import get
 from xml import etree
 
-# 不分页章节正文爬取
-def get_chapter_content1(self, chapter_url:str):
+
+def get_chapter_content1(self, chapter_url: str):
+    # 不分页章节正文爬取
     url = self.catalog_url + chapter_url
     response = rq.get(url, headers=get())
     response.encoding = 'gbk'
     html = etree.HTML(response.text)
-        
+
     res_ = html.xpath('//div[@class="content" and @id="content"]//text()')
     res = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
     res = list(filter(lambda x: x, res))
-    
+
     res = '\n'.join(res)
     return res
 
-# 分页章节正文爬取
-def get_chapter_content2(self, chapter_url:str):
+
+def get_chapter_content2(self, chapter_url: str):
+    # 分页章节正文爬取
     res = []
 
     i = 0
@@ -37,10 +39,10 @@ def get_chapter_content2(self, chapter_url:str):
         res_ = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
         res_ = list(filter(lambda x: x, res_))
         res += res_
-            
+
         page = html.xpath('//h1/small')
         if not page:
             break
-        
+
     res = '\n'.join(res)
     return res

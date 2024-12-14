@@ -90,10 +90,8 @@ class Crawler:
                 print(chapter['title'])
                 self.already_log.append(chapter['title'])
             print('顺利完成')
-
         except Exception as e:
             print('中断', e)
-
         finally:
             with open(self.logpath, 'w', encoding='utf-8') as f:
                 for i in self.already_log:

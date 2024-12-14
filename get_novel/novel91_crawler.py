@@ -4,8 +4,9 @@ from copy import copy
 import os
 from tools.random_agent import get
 
+
 class Crawler:
-    def __init__(self, novel_name, home_url:str, catalog_url:str) -> None:
+    def __init__(self, novel_name, home_url: str, catalog_url: str) -> None:
         txtpath = f'novels/{novel_name}/{novel_name}.txt'
         logpath = f'novels/{novel_name}/already_log.txt'
         if not os.path.exists(f'novels/{novel_name}'):
@@ -43,12 +44,12 @@ class Crawler:
 
         return res
 
-    def get_chapter_content(self, chapter_url:str):
+    def get_chapter_content(self, chapter_url: str):
         url = self.catalog_url + chapter_url
         response = rq.get(url, headers=get())
         response.encoding = 'gbk'
         html = etree.HTML(response.text)
-            
+
         res_ = html.xpath('//div[@class="content" and @id="content"]//text()')
         res = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
         res = list(filter(lambda x: x, res))
@@ -62,14 +63,13 @@ class Crawler:
             for chapter in catalog:
                 if chapter['title'] in self.already_log:
                     continue
-                print(chapter['title'] + '\n\n' + self.get_chapter_content(chapter['link']) + '\n\n', file=self.txtio)
+                print(chapter['title'] + '\n\n' +
+                      self.get_chapter_content(chapter['link']) + '\n\n', file=self.txtio)
                 print(chapter['title'])
                 self.already_log.append(chapter['title'])
             print('顺利完成')
-
         except Exception as e:
             print('中断', e)
-            
         finally:
             with open(self.logpath, 'w', encoding='utf-8') as f:
                 for i in self.already_log:
