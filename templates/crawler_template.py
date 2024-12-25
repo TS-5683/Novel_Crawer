@@ -31,13 +31,13 @@ class Crawler:
     def get_catalog(self):
         res = copy([])
 
-        response = rq.get(self.catalog_url, headers=get())
+        response = rq.get(self.catalog_url, headers=get(), timeout=(5, 10))
         response.encoding = 'utf-8'
         html = etree.HTML(response.text)
         pages = html.xpath('//select[@id="indexselect"]//option/@value')
 
         for page_link in pages:
-            response = rq.get(self.home_url + page_link, headers=get())
+            response = rq.get(self.home_url + page_link, headers=get(), timeout=(5, 10))
             response.encoding = 'utf-8'
             html = etree.HTML(response.text)
             box = html.xpath('//div[@class="section-box"]')[1]
@@ -61,7 +61,7 @@ class Crawler:
             curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
             url = self.home_url + curl
 
-            response = rq.get(url, headers=get())
+            response = rq.get(url, headers=get(), timeout=(5, 10))
             response.encoding = 'utf-8'
             if response.status_code != 200:
                 break

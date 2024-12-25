@@ -6,7 +6,7 @@ from tools.random_agent import get
 
 
 class Crawler:
-    def __init__(self, novel_name, home_url: str, catalog_url: str) -> None:
+    def __init__(self, novel_name, catalog_url: str) -> None:
         txtpath = f'novels/{novel_name}/{novel_name}.txt'
         logpath = f'novels/{novel_name}/already_log.txt'
         if not os.path.exists(f'novels/{novel_name}'):
@@ -14,7 +14,7 @@ class Crawler:
         init = False if os.path.exists(txtpath) and os.path.exists(logpath) else True
 
         self.txtio = open(txtpath, mode='w' if init else 'a', encoding='utf-8')
-        self.home_url = home_url
+        self.home_url = 'https://www.biquge345.com'
         self.catalog_url = catalog_url
         self.logpath = logpath
 
@@ -31,7 +31,7 @@ class Crawler:
     def get_catalog(self):
         res = []
 
-        response = rq.get(self.catalog_url, headers=get())
+        response = rq.get(self.catalog_url, headers=get(), timeout=(5, 10))
         response.encoding = 'utf-8'
         html = etree.HTML(response.text)
         box = html.xpath('//ul[@class="info"]')[0]
@@ -48,7 +48,7 @@ class Crawler:
 
     def get_chapter_content(self, chapter_url: str):
         url = self.home_url + chapter_url
-        response = rq.get(url, headers=get())
+        response = rq.get(url, headers=get(), timeout=(5, 10))
         response.encoding = 'utf-8'
         html = etree.HTML(response.text)
 

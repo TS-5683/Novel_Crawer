@@ -6,7 +6,7 @@ from xml import etree
 def get_chapter_content1(self, chapter_url: str):
     # 不分页章节正文爬取
     url = self.catalog_url + chapter_url
-    response = rq.get(url, headers=get())
+    response = rq.get(url, headers=get(), timeout=(5, 10))
     response.encoding = 'gbk'
     html = etree.HTML(response.text)
 
@@ -28,7 +28,7 @@ def get_chapter_content2(self, chapter_url: str):
 
         curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
         url = self.home_url + curl
-        response = rq.get(url, headers=get())
+        response = rq.get(url, headers=get(), timeout=(5, 10))
         if response.status_code != 200:
             break
         response.encoding = 'utf-8'
