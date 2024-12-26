@@ -93,7 +93,7 @@ def get_header():
 
 def get(url: str, encoding='utf-8'):
     """
-    Get the content of the url
+    Get the content of the url using a random user agent
     :param url: str
     :return: str
     """

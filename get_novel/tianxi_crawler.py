@@ -1,6 +1,7 @@
 from lxml import etree
 import os
-import sys
+import pandas as pd
+from tools.str_tools import chapter_info
 from tools.random_agent import get
 from tools.error_here import print_cwd_traceback
 

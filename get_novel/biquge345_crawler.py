@@ -1,9 +1,9 @@
-from lxml import etree
 import os
 import pandas as pd
 from tools.random_agent import get
 from tools.error_here import print_cwd_traceback
 from tools.str_tools import chapter_info
+from lxml import etree
 
 
 class Crawler:
@@ -66,8 +66,8 @@ class Crawler:
                 info = chapter_info(chapter['title'])
                 if info['index'] in self.already_log['index']:
                     continue
-                print(chapter['title'] + '\n\n' + self.get_chapter_content(chapter['link'])
-                      + '\n\n', file=self.txtio)
+                content = self.get_chapter_content(chapter['link'])
+                print(chapter['title'] + '\n\n' + content + '\n\n', file=self.txtio)
                 print(chapter['title'])
                 self.already_log['index'].append(info['index'])
                 self.already_log['name'].append(info['name'])
