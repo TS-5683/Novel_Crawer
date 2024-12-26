@@ -1,6 +1,4 @@
-import requests as rq
 from lxml import etree
-from copy import copy
 import os
 import sys
 from tools.random_agent import get
@@ -10,7 +8,7 @@ from tools.error_here import print_cwd_traceback
 class Crawler:
     def __init__(self, novel_name, catalog_url: str) -> None:
         txtpath = f'novels/{novel_name}/{novel_name}.txt'
-        logpath = f'novels/{novel_name}/already_log.txt'
+        logpath = f'novels/{novel_name}/already_log.csv'
         if not os.path.exists(f'novels/{novel_name}'):
             os.mkdir(f'novels/{novel_name}')
         init = False if os.path.exists(txtpath) and os.path.exists(logpath) else True
@@ -22,27 +20,26 @@ class Crawler:
 
         if not init:
             with open(logpath, 'r', encoding='utf-8') as f:
-                self.already_log = f.read().split('\n')
+                df = pd.read_csv(f)
+                self.already_log = {'index': df['index'].tolist(), 'name': df['name'].tolist()}
         else:
-            self.already_log = copy([])
+            self.already_log = {'index': [], 'name': []}
 
     def __del__(self):
         if not self.txtio.closed:
             self.txtio.close()
 
     def get_catalog(self):
-        res = copy([])
+        res = []
 
-        response = rq.get(self.catalog_url, headers=get(), timeout=(5, 10))
-        response.encoding = 'utf-8'
-        html = etree.HTML(response.text)
+        response = get(self.catalog_url, 'utf-8')
+        html = etree.HTML(response)
         select = html.xpath('//select[@id="indexselect"]')[0]
         pages = select.xpath('.//option/@value')
 
         for page_link in pages:
-            response = rq.get(self.home_url + page_link, headers=get(), timeout=(5, 10))
-            response.encoding = 'utf-8'
-            html = etree.HTML(response.text)
+            response = get(self.home_url + page_link, 'utf-8')
+            html = etree.HTML(response)
             box = html.xpath('//div[@id="content_1"]')[0]
             lis = box.xpath('.//a')
 
@@ -63,9 +60,8 @@ class Crawler:
             curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
             url = self.home_url + curl
 
-            response = rq.get(url, headers=get(), timeout=(5, 10))
-            response.encoding = 'utf-8'
-            html = etree.HTML(response.text)
+            response = get(url, 'utf-8')
+            html = etree.HTML(response)
 
             if i == 1:
                 limit = int(html.xpath('//h1[@class="bookname"]/text()')[0][-2])
@@ -85,18 +81,18 @@ class Crawler:
         try:
             catalog = self.get_catalog()
             for chapter in catalog:
-                if chapter['title'] in self.already_log:
+                info = chapter_info(chapter['title'])
+                if info['index'] in self.already_log['index']:
                     continue
                 content = self.get_chapter_content(chapter['link'])
                 print(chapter['title'] + '\n\n' + content + '\n\n', file=self.txtio)
                 print(chapter['title'])
-                self.already_log.append(chapter['title'])
+                self.already_log['index'].append(info['index'])
+                self.already_log['name'].append(info['name'])
             print('顺利完成')
         except Exception as e:
-            _, _, tb = sys.exc_info()
-            print_cwd_traceback(tb)
+            print_cwd_traceback(e.__traceback__)
             print('中断', e)
         finally:
             with open(self.logpath, 'w', encoding='utf-8') as f:
-                for i in self.already_log:
-                    print(i, file=f)
+                pd.DataFrame(self.already_log).to_csv(f, index=False)

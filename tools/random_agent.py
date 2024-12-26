@@ -1,4 +1,5 @@
 import random
+import requests as rq
 
 
 user_agent = [
@@ -79,7 +80,7 @@ user_agent = [
 ]
 
 
-def get():
+def get_header():
     """
     Get a random user agent
     :return: dict
@@ -88,3 +89,15 @@ def get():
     user = {}
     user['User-Agent'] = user_agent[random.randint(0, len(user_agent) - 1)]
     return user
+
+
+def get(url: str, encoding='utf-8'):
+    """
+    Get the content of the url
+    :param url: str
+    :return: str
+    """
+
+    response = rq.get(url, headers=get_header(), timeout=(10, 10))
+    response.encoding = encoding
+    return response.text

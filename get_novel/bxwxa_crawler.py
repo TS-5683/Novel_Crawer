@@ -1,14 +1,15 @@
-import requests as rq
 from lxml import etree
-from copy import copy
 import os
+import pandas as pd
+from tools.str_tools import chapter_info
 from tools.random_agent import get
+from tools.error_here import print_cwd_traceback
 
 
 class Crawler:
     def __init__(self, novel_name: str, catalog_url: str) -> None:
         txtpath = f'novels/{novel_name}/{novel_name}.txt'
-        logpath = f'novels/{novel_name}/already_log.txt'
+        logpath = f'novels/{novel_name}/already_log.csv'
         if not os.path.exists(f'novels/{novel_name}'):
             os.mkdir(f'novels/{novel_name}')
         init = False if os.path.exists(txtpath) and os.path.exists(logpath) else True
@@ -20,20 +21,20 @@ class Crawler:
 
         if not init:
             with open(logpath, 'r', encoding='utf-8') as f:
-                self.already_log = f.read().split('\n')
+                df = pd.read_csv(f)
+                self.already_log = {'index': df['index'].tolist(), 'name': df['name'].tolist()}
         else:
-            self.already_log = copy([])
+            self.already_log = {'index': [], 'name': []}
 
     def __del__(self):
         if not self.txtio.closed:
             self.txtio.close()
 
     def get_catalog(self):
-        res = copy([])
+        res = []
 
-        response = rq.get(self.catalog_url, headers=get(), timeout=(5, 10))
-        response.encoding = 'gbk'
-        html = etree.HTML(response.text)
+        response = get(self.catalog_url, 'gbk')
+        html = etree.HTML(response)
         box = html.xpath('//dl[@class="zjlist"]')[0]
         links = box.xpath('.//a')
 
@@ -47,10 +48,8 @@ class Crawler:
 
     def get_chapter_content(self, chapter_url: str):
         url = self.catalog_url + chapter_url
-        response = rq.get(url, headers=get(), timeout=(5, 10))
-        response.encoding = 'gbk'
-
-        html = etree.HTML(response.text)
+        response = get(url, 'gbk')
+        html = etree.HTML(response)
         res_ = html.xpath('//div[@id="content"]//text()')[3:]
         res = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
 
@@ -62,16 +61,18 @@ class Crawler:
         try:
             catalog = self.get_catalog()
             for chapter in catalog:
-                if chapter['title'] in self.already_log:
+                info = chapter_info(chapter['title'])
+                if info['index'] in self.already_log['index']:
                     continue
                 print(chapter['title'] + '\n\n' +
                       self.get_chapter_content(chapter['link']) + '\n\n', file=self.txtio)
                 print(chapter['title'])
-                self.already_log.append(chapter['title'])
+                self.already_log['index'].append(info['index'])
+                self.already_log['name'].append(info['name'])
             print('顺利完成')
         except Exception as e:
+            print_cwd_traceback(e.__traceback__)
             print('中断', e)
         finally:
             with open(self.logpath, 'w', encoding='utf-8') as f:
-                for i in self.already_log:
-                    print(i, file=f)
+                pd.DataFrame(self.already_log).to_csv(f, index=False)
