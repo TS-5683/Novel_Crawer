@@ -1,7 +1,7 @@
 from lxml import etree
 import os
 import pandas as pd
-from tools.str_tools import chapter_info
+from tools.str_tools import chapter_info, str_between
 from tools.random_agent import get
 from tools.error_here import print_cwd_traceback
 
@@ -12,7 +12,7 @@ class Crawler:
         logpath = f'novels/{novel_name}/already_log.csv'
         if not os.path.exists(f'novels/{novel_name}'):
             os.mkdir(f'novels/{novel_name}')
-        init = False if os.path.exists(txtpath) and os.path.exists(logpath) else True
+        init = False if (os.path.exists(txtpath) and os.path.exists(logpath)) else True
 
         self.txtio = open(txtpath, mode='w' if init else 'a', encoding='utf-8')
         self.home_url = 'https://www.qushucheng.com/'
@@ -55,12 +55,9 @@ class Crawler:
     def get_chapter_content(self, chapter_url: str):
         url = self.home_url + chapter_url
         response = get(url, 'utf-8')
-        html = etree.HTML(response)
-
-        res_ = html.xpath('//div[@class="content" and @id="content"]//text()')
-        res = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
-        res = list(filter(lambda x: x, res))
-
+        res = str_between(response, '<div class="content" id="content">', '</div>')
+        res = res.replace('<p>', '').split('</p>')
+        res = [i.strip() for i in res if any(char.isprintable() for char in i)]
         res = '\n'.join(res)
         return res
 
@@ -83,3 +80,4 @@ class Crawler:
         finally:
             with open(self.logpath, 'w', encoding='utf-8') as f:
                 pd.DataFrame(self.already_log).to_csv(f, index=False)
+            self.txtio.close()
