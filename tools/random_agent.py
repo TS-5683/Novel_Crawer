@@ -98,6 +98,6 @@ def get(url: str, encoding='utf-8'):
     :return: str
     """
 
-    response = rq.get(url, headers=get_header(), timeout=(10, 10))
+    response = rq.get(url, headers=get_header(), timeout=(10, 20))
     response.encoding = encoding
     return response.text
