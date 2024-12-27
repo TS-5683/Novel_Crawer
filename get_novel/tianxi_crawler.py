@@ -4,6 +4,7 @@ import pandas as pd
 from tools.str_tools import chapter_info
 from tools.random_agent import get
 from tools.error_here import print_cwd_traceback
+from tools.str_tools import str_between
 
 
 class Crawler:
@@ -53,28 +54,10 @@ class Crawler:
         return res
 
     def get_chapter_content(self, chapter_url: str):
-        res = []
-        i = 0
-
-        while True:
-            i += 1
-            curl = chapter_url if i == 1 else f'{chapter_url[:-5]}_{i}.html'
-            url = self.home_url + curl
-
-            response = get(url, 'utf-8')
-            html = etree.HTML(response)
-
-            if i == 1:
-                limit = int(html.xpath('//h1[@class="bookname"]/text()')[0][-2])
-
-            res_ = html.xpath('//div[@id="booktxt"]//text()')
-            res_ = [i.strip() for i in res_ if any(char.isprintable() for char in i)]
-            res_ = list(filter(lambda x: x, res_))
-            res += res_
-
-            if i == limit:
-                break
-
+        html_text = get(self.home_url + chapter_url, 'utf-8')
+        res = str_between(html_text, '<div id="booktxt">', '</div>')
+        res = res.replace('<p>', '').split('</p>')
+        res = [i.strip() for i in res if any(char.isprintable() for char in i)]
         res = '\n'.join(res)
         return res
 
