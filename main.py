@@ -4,6 +4,7 @@ from get_novel.novel91_crawler import Crawler as novel91Crawler
 from get_novel.biquge345_crawler import Crawler as biquge345Crawler
 from get_novel.tianxi_crawler import Crawler as tianxiCrawler
 from get_novel.qushu_crawler import Crawler as qushuCrawler
+from get_novel.bqgwx_crawler import Crawler as bqgCrawler
 import sys
 
 
@@ -16,7 +17,7 @@ def main():
             print('输入参数错误\n', e)
             return
     else:
-        cler = tianxiCrawler('我只是个凡人', 'https://www.tianxibook.com/xiaoshuo/94948522/')
+        cler = bqgCrawler('云边复仇', 'https://www.xbgqw.com/167_167972/')
 
     cler.get_novel()
     del cler
