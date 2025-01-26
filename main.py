@@ -3,6 +3,7 @@ from get_novel.bxwxa_crawler import Crawler as bxwxaCrawler
 from get_novel.plameny_crawler import Crawler as plamenyCrawler
 from get_novel.novel91_crawler import Crawler as novel91Crawler
 from get_novel.biquge345_crawler import Crawler as biquge345Crawler
+from get_novel.qushucheng_crawler import Crawler as qushuchengCrawler
 import sys
 
 
@@ -15,8 +16,8 @@ def main():
             print('输入参数错误\n', e)
             return
     else:
-        cler = biquge345Crawler('我只是个凡人', 'https://www.biquge345.com',
-                                'https://www.biquge345.com/book/405771/')
+        cler = biquge345Crawler('女帝退婚', 'https://www.biquge345.com',
+                                'https://www.biquge345.com/book/360991/')
 
     cler.get_novel()
     del cler
