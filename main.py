@@ -12,12 +12,12 @@ def main():
     args = sys.argv
     if len(args) > 1:
         try:
-            cler = eval(f'{args[1]}Crawler{(args[2], args[3])}')
+            cler = eval(f'{args[1]}Crawler{(args[2], args[3], args[4])}')
         except Exception as e:
             print('输入参数错误\n', e)
             return
     else:
-        cler = bqgCrawler('云边复仇', 'https://www.xbgqw.com/167_167972/')
+        cler = bqgCrawler('云边复仇', 'https://www.xbgqw.com/167_167972/', 'utf-8')
 
     cler.get_novel()
     del cler
