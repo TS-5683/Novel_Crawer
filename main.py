@@ -1,10 +1,10 @@
-from get_novel._22biqu_crawler import Crawler as _22biquCrawler
-from get_novel.bxwxa_crawler import Crawler as bxwxaCrawler
-from get_novel.novel91_crawler import Crawler as novel91Crawler
-from get_novel.biquge345_crawler import Crawler as biquge345Crawler
-from get_novel.tianxi_crawler import Crawler as tianxiCrawler
-from get_novel.qushu_crawler import Crawler as qushuCrawler
-from get_novel.bqgwx_crawler import Crawler as bqgCrawler
+from get_novel._22biquCrawler import Crawler as _22biquCrawler
+from get_novel.bxwxaCrawler import Crawler as bxwxaCrawler
+from get_novel.novel91Crawler import Crawler as novel91Crawler
+from get_novel.biquge345Crawler import Crawler as biquge345Crawler
+from get_novel.tianxiCrawler import Crawler as tianxiCrawler
+from get_novel.qushuCrawler import Crawler as qushuCrawler
+from get_novel.bqgwxCrawler import Crawler as bqgCrawler
 import sys
 
 
