@@ -12,13 +12,13 @@ class Crawler(crawler):
     def get_catalog(self):
         res = []
 
-        response = get(self.catalog_url, 'utf-8')
+        response = get(self.catalog_url, self.charset)
         html = etree.HTML(response)
         select = html.xpath('//select[@id="indexselect"]')[0]
         pages = select.xpath('.//option/@value')
 
         for page_link in pages:
-            response = get(self.home_url + page_link, 'utf-8')
+            response = get(self.home_url + page_link, self.charset)
             html = etree.HTML(response)
             box = html.xpath('//ul[@class="section-list fix"]')[1]
             lis = box.xpath('.//a')
@@ -33,7 +33,7 @@ class Crawler(crawler):
 
     def get_chapter_content(self, chapter_url: str):
         url = self.home_url + chapter_url
-        response = get(url, 'utf-8')
+        response = get(url, self.charset)
         res = str_between(response, '<div class="content" id="content">', '</div>')
         res = res.replace('<p>', '').split('</p>')
         res = [i.strip() for i in res if any(char.isprintable() for char in i)]

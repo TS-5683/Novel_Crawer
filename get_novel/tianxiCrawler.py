@@ -12,13 +12,13 @@ class Crawler(crawler):
     def get_catalog(self):
         res = []
 
-        response = get(self.catalog_url, 'utf-8')
+        response = get(self.catalog_url, self.charset)
         html = etree.HTML(response)
         select = html.xpath('//select[@id="indexselect"]')[0]
         pages = select.xpath('.//option/@value')
 
         for page_link in pages:
-            response = get(self.home_url + page_link, 'utf-8')
+            response = get(self.home_url + page_link, self.charset)
             html = etree.HTML(response)
             box = html.xpath('//div[@id="content_1"]')[0]
             lis = box.xpath('.//a')
@@ -32,9 +32,15 @@ class Crawler(crawler):
         return res
 
     def get_chapter_content(self, chapter_url: str):
-        html_text = get(self.home_url + chapter_url, 'utf-8')
-        res = str_between(html_text, '<div id="booktxt">', '</div>')
-        res = res.replace('<p>', '').split('</p>')
-        res = [i.strip() for i in res if any(char.isprintable() for char in i)]
+        html_text = get(self.home_url + chapter_url, self.charset)
+        pages = int(str_between(html_text, '<h1 class="bookname">', '</h1>')[-2])
+        res = []
+
+        for i in range(1, pages + 1):
+            if i > 1:
+                html_text = get(self.home_url + chapter_url.replace('.html', f"_{i}.html"), self.charset)
+            res_ = str_between(html_text, '<div id="booktxt">', '</div>')
+            res_ = res_.replace('<p>', '').split('</p>')
+            res += [i.strip() for i in res_ if any(char.isprintable() for char in i)]
         res = '\n'.join(res)
         return res
