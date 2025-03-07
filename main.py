@@ -17,9 +17,9 @@ def main():
             print('输入参数错误\n', e)
             return
     else:
-        cler = bqgCrawler('云边复仇', 'https://www.xbgqw.com/167_167972/', 'utf-8')
+        cler = bxwxaCrawler('从前有座灵剑山', 'https://www.bxwxa.com/book_114/', 'utf-8')
 
-    cler.get_novel()
+    cler.get_catalog()
     del cler
 
 

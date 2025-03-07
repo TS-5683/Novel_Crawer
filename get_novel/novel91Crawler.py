@@ -9,7 +9,7 @@ from get_novel.templateCrawler import Crawler as crawler
 
 class Crawler(crawler):
     def __init__(self, novel_name, catalog_url: str, charset) -> None:
-        super.__init__(novel_name, catalog_url, charset)
+        super().__init__(novel_name, catalog_url, charset)
         self.home_url = 'https://novel91.com'
 
     def get_catalog(self):

@@ -1,5 +1,6 @@
 from lxml import etree
 import os
+import pandas as pd
 from tools.random_agent import get
 from tools.error_here import print_cwd_traceback
 
@@ -7,7 +8,7 @@ from tools.error_here import print_cwd_traceback
 class Crawler:
     def __init__(self, novel_name, catalog_url: str, charset='utf-8') -> None:
         txtpath = f'novels/{novel_name}/{novel_name}.txt'
-        self.logpath = f'novels/{novel_name}/already_log.txt'
+        self.logpath = f'novels/{novel_name}/already_log.csv'
         self.charset = charset
         if not os.path.exists(f'novels/{novel_name}'):
             os.mkdir(f'novels/{novel_name}')
@@ -19,9 +20,13 @@ class Crawler:
 
         if not init:
             with open(self.logpath, 'r', encoding='utf-8') as f:
-                self.already_log = f.read().split('\n')
+                df = pd.read_csv(f)
+                self.already_log = {
+                    'title': df['title'].tolist(),
+                    'link': df['link'].tolist()
+                }
         else:
-            self.already_log = []
+            self.already_log = {'title': [], 'link': []}
 
     def __del__(self):
         if not self.txtio.closed:
@@ -77,17 +82,17 @@ class Crawler:
         try:
             catalog = self.get_catalog()
             for chapter in catalog:
-                if chapter['title'] in self.already_log:
+                if chapter['title'] in self.already_log['title'] \
+                        and chapter['link'] in self.already_log['link']:
                     continue
                 content = self.get_chapter_content(chapter['link'])
                 print(chapter['title'] + '\n\n' + content + '\n\n', file=self.txtio)
                 print(chapter['title'])
-                self.already_log.append(chapter['title'])
+                self.already_log['title'].append(chapter['title'])
+                self.already_log['link'].append(chapter['link'])
             print('顺利完成')
         except Exception as e:
             print_cwd_traceback(e.__traceback__)
             print('中断', e)
         finally:
-            with open(self.logpath, 'w', encoding='utf-8') as f:
-                for i in self.already_log:
-                    print(i, file=f)
+            pd.DataFrame(self.already_log).to_csv(self.logpath, index=False)
