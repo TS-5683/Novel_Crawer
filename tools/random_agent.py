@@ -91,13 +91,13 @@ def get_header():
     return user
 
 
-def get(url: str, encoding='utf-8'):
+def get(url: str, encoding='utf-8', cookies=None):
     """
     Get the content of the url using a random user agent
     :param url: str
     :return: str
     """
 
-    response = rq.get(url, headers=get_header(), timeout=(10, 20))
+    response = rq.get(url, headers=get_header(), cookies=cookies, timeout=(10, 20))
     response.encoding = encoding
     return response.text

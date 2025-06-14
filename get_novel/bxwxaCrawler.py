@@ -15,11 +15,18 @@ class Crawler(crawler):
         html = etree.HTML(response)
         select = html.xpath('//select')[0]
         cata_urls = select.xpath('.//option/@value')
+        first = True
 
         for cata_url in cata_urls:
             response = get(self.home_url + cata_url)
             html = etree.HTML(response)
-            lis = html.xpath('//')
+            if first:
+                lis = html.xpath('//ul[@class="fix section-list"]/li')
+                first = False
+            else:
+                lis = html.xpath('//ul[@class="section-list fix ycxsid"]/li')
+            for li in lis:
+                res.append({'title': li.xpath('.//text()')[0], 'link': li.xpath('.//@href')[0]})
 
         return res
 

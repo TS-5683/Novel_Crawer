@@ -5,6 +5,7 @@ from get_novel.biquge345Crawler import Crawler as biquge345Crawler
 from get_novel.tianxiCrawler import Crawler as tianxiCrawler
 from get_novel.qushuCrawler import Crawler as qushuCrawler
 from get_novel.bqgwxCrawler import Crawler as bqgCrawler
+from get_novel.beqegeCrawler import Crawler as beqegeCrawler
 import sys
 
 
@@ -17,7 +18,7 @@ def main():
             print('输入参数错误\n', e)
             return
     else:
-        cler = tianxiCrawler('从前有座灵剑山', 'https://www.tianxibook.com/xiaoshuo/94086204/', 'utf-8')
+        cler = beqegeCrawler('史上第一祖师爷', 'https://www.beqege.cc/44701/', 'utf-8')
 
     cler.get_novel()
     del cler
